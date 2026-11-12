@@ -3,119 +3,142 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>قفل بالصوت</title>
+<title>قفل الصوت</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f6f8;--card:#fff;--tx:#14181f;--mut:#5b6573;--ac:#1f6feb;--ok:#1a7f37;--bad:#cf222e;--bd:#d6dce3;--in:#fff;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1217;--card:#171c23;--tx:#e8ecf1;--mut:#9aa5b3;--ac:#58a6ff;--ok:#3fb950;--bad:#ff7b72;--bd:#2a323c;--in:#0e1217}}
-:root[data-theme="dark"]{--bg:#0e1217;--card:#171c23;--tx:#e8ecf1;--mut:#9aa5b3;--ac:#58a6ff;--ok:#3fb950;--bad:#ff7b72;--bd:#2a323c;--in:#0e1217}
+:root{--bg:#e8edf0;--ink:#12222b;--mut:#5a6b75;--card:#f7f9fa;--line:#c4cfd6;--acc:#1b5e8c;--onacc:#fff;--ok:#1f7a4d;--bad:#b3392f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1a20;--ink:#e6eef2;--mut:#93a5af;--card:#17262e;--line:#2c4350;--acc:#5fb0e3;--onacc:#0b161c;--ok:#4cc38a;--bad:#ef7a70}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1a20;--ink:#e6eef2;--mut:#93a5af;--card:#17262e;--line:#2c4350;--acc:#5fb0e3;--onacc:#0b161c;--ok:#4cc38a;--bad:#ef7a70}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;line-height:1.5}
-main{max-width:480px;margin:0 auto;padding:16px}
-h1{font-size:1.25rem;margin:4px 0 12px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
-label{display:block;font-size:.85rem;color:var(--mut);margin:10px 0 4px}
-input,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--in);color:var(--tx);font-size:1rem}
-button{width:100%;padding:12px;border:0;border-radius:12px;background:var(--ac);color:#fff;font-size:1rem;font-weight:600;margin-top:10px}
-button.sec{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,system-ui,sans-serif;line-height:1.6}
+main{max-width:480px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:28px;font-weight:900;margin:8px 0 16px}
+.res{border:2px solid var(--line);border-radius:6px;padding:18px;text-align:center;background:var(--card);margin-bottom:20px}
+.res b{display:block;font-size:34px;font-weight:900}
+.res small{color:var(--mut)}
+.res.ok{border-color:var(--ok)}.res.ok b{color:var(--ok)}
+.res.bad{border-color:var(--bad)}.res.bad b{color:var(--bad)}
+section{background:var(--card);border-top:3px solid var(--acc);padding:14px 16px;margin-bottom:14px}
+h2{font-size:18px;margin:0 0 6px}
+p{margin:4px 0 10px;color:var(--mut);font-size:15px}
+button{font:inherit;font-weight:700;width:100%;padding:14px;border:0;border-radius:4px;background:var(--acc);color:var(--onacc);margin-top:6px}
+button.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
 button:disabled{opacity:.5}
-.chip{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.8rem;border:1px solid var(--bd);color:var(--mut)}
-.chip.on{color:var(--ok);border-color:var(--ok)}
-#heard{min-height:1.6em;font-size:1.1rem;margin-top:8px}
-#log{font-size:.85rem;max-height:180px;overflow:auto;color:var(--mut)}
-#log .ok{color:var(--ok)}#log .bad{color:var(--bad)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.dots{display:flex;gap:8px;margin:8px 0}
+.dots i{flex:1;height:10px;border-radius:2px;background:var(--line)}
+.dots i.on{background:var(--ok)}
+input[type=range]{width:100%}
 </style>
 </head>
 <body>
 <main>
-<h1>🔐 قفل بالصوت</h1>
+<h1>قفل الصوت</h1>
+<div class="res" id="res"><b id="rt">جاهز</b><small id="rs">سجّل صوتك أولًا</small></div>
 
-<div class="card">
-  <span id="st" class="chip">غير متصل</span>
-  <button id="conn">الاتصال بالقفل (HM-10)</button>
-</div>
+<section>
+<h2>1. سجّل صوتك</h2>
+<p>اضغط وقول كلمة open بنفس الطريقة كل مرة (5 عينات). اقعد في مكان هادي.</p>
+<div class="dots" id="dots"></div>
+<button id="bRec">سجّل عينة</button>
+<button class="sec" id="bClr">امسح التسجيلات</button>
+</section>
 
-<div class="card">
-  <label for="phrase">العبارة السرية</label>
-  <input id="phrase" placeholder="مثلاً: افتح ">
-  <label for="lang">لغة الكلام</label>
-  <select id="lang"><option value="ar-EG">عربي (مصر)</option><option value="en-US">English</option></select>
-  <label for="token">الرسالة اللي بتتبعت للقفل (لازم تطابق PHONE_TOKEN في الكود)</label>
-  <input id="token" value="VOICE_OK" dir="ltr">
-  <button id="mic">🎤 اضغط وقول العبارة</button>
-  <div id="heard"></div>
-</div>
+<section>
+<h2>2. جرّب</h2>
+<p>اضغط وقول open. لو بيرفض صوتك زوّد الحساسية، ولو بيقبل غيرك قلّلها.</p>
+<input type="range" id="sens" min="70" max="170" value="100" aria-label="الحساسية">
+<button id="bTest">قول open</button>
+</section>
 
-<div class="card">
-  <button id="test" class="sec">إرسال الرسالة مباشرة (اختبار)</button>
-  <div id="log"></div>
-</div>
+<section>
+<h2>3. وصّل القفل</h2>
+<p id="bs">اختار موديول HM-10 من القائمة.</p>
+<button class="sec" id="bBt">وصّل Bluetooth</button>
+</section>
 </main>
 
 <script>
-var SVC='0000ffe0-0000-1000-8000-00805f9b34fb', CH='0000ffe1-0000-1000-8000-00805f9b34fb';
-var ch=null;
-function $(id){return document.getElementById(id)}
-function load(k,d){try{return localStorage.getItem(k)||d}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function log(t,c){var d=document.createElement('div');d.textContent=new Date().toLocaleTimeString()+'  '+t;if(c)d.className=c;$('log').prepend(d)}
-function norm(s){return s.toLowerCase().replace(/[\u064B-\u065F\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim()}
-function setConn(on,name){var s=$('st');s.textContent=on?('متصل: '+(name||'')):'غير متصل';s.className='chip'+(on?' on':'')}
+const $=s=>document.querySelector(s),N=5,REC=1.6;
+let T=[],thr=0,ch=null,ctx=null;
+try{const s=JSON.parse(localStorage.getItem('vl')||'null');if(s)T=s}catch(e){}
+function save(){try{localStorage.setItem('vl',JSON.stringify(T))}catch(e){}}
+function show(t,s,c){$('#rt').textContent=t;$('#rs').textContent=s||'';$('#res').className='res '+(c||'')}
+function dots(){$('#dots').innerHTML=Array.from({length:N},(_,i)=>'<i class="'+(i<T.length?'on':'')+'"></i>').join('')}
 
-['phrase','lang','token'].forEach(function(id){
-  var el=$(id);var v=load('vl_'+id,'');if(v)el.value=v;
-  el.addEventListener('change',function(){save('vl_'+id,el.value)});
-});
+function fft(re,im){const n=re.length;
+ for(let i=1,j=0;i<n;i++){let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;if(i<j){[re[i],re[j]]=[re[j],re[i]];[im[i],im[j]]=[im[j],im[i]]}}
+ for(let l=2;l<=n;l<<=1){const a=-2*Math.PI/l;for(let i=0;i<n;i+=l)for(let k=0;k<l/2;k++){const c=Math.cos(a*k),s=Math.sin(a*k),u=i+k,v=u+l/2,tr=re[v]*c-im[v]*s,ti=re[v]*s+im[v]*c;re[v]=re[u]-tr;im[v]=im[u]-ti;re[u]+=tr;im[u]+=ti}}}
 
-async function connect(){
-  if(!navigator.bluetooth){log('المتصفح لا يدعم Bluetooth. افتح الرابط من Chrome على أندرويد','bad');return}
-  try{
-    var dev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:[SVC]});
-    dev.addEventListener('gattserverdisconnected',function(){ch=null;setConn(false);log('انقطع الاتصال','bad')});
-    var srv=await dev.gatt.connect();
-    var s=await srv.getPrimaryService(SVC);
-    ch=await s.getCharacteristic(CH);
-    await ch.startNotifications();
-    ch.addEventListener('characteristicvaluechanged',function(e){log('القفل: '+new TextDecoder().decode(e.target.value).trim())});
-    setConn(true,dev.name);log('تم الاتصال','ok');
-  }catch(e){log('فشل الاتصال: '+e.message,'bad')}
-}
+function feat(x,sr){
+ const L=Math.round(.025*sr),H=Math.round(.01*sr);let n=1;while(n<L)n<<=1;
+ const mel=f=>2595*Math.log10(1+f/700),inv=m=>700*(10**(m/2595)-1),M=26;
+ const pts=Array.from({length:M+2},(_,i)=>Math.floor((n+1)*inv(mel(100)+i*(mel(Math.min(7000,sr/2))-mel(100))/(M+1))/sr));
+ const fr=[],en=[];
+ for(let s=0;s+L<=x.length;s+=H){
+  const re=new Float64Array(n),im=new Float64Array(n);let e=0;
+  for(let i=0;i<L;i++){const v=x[s+i]-(i&&.97*x[s+i-1]);e+=v*v;re[i]=v*(.54-.46*Math.cos(2*Math.PI*i/(L-1)))}
+  fft(re,im);const P=i=>re[i]*re[i]+im[i]*im[i],lm=[];
+  for(let m=1;m<=M;m++){let a=0;for(let k=pts[m-1];k<pts[m];k++)a+=P(k)*(k-pts[m-1])/Math.max(1,pts[m]-pts[m-1]);for(let k=pts[m];k<pts[m+1];k++)a+=P(k)*(pts[m+1]-k)/Math.max(1,pts[m+1]-pts[m]);lm.push(Math.log(a+1e-10))}
+  const c=[];for(let q=1;q<=12;q++){let a=0;for(let m=0;m<M;m++)a+=lm[m]*Math.cos(Math.PI*q*(m+.5)/M);c.push(a)}
+  fr.push(c);en.push(e)}
+ const mx=Math.max(...en);let a=en.findIndex(e=>e>mx*.05),b=en.length-1-[...en].reverse().findIndex(e=>e>mx*.05);
+ if(!isFinite(mx)||mx<1e-6||a<0)return null;
+ a=Math.max(0,a-3);b=Math.min(en.length-1,b+3);const f=fr.slice(a,b+1);
+ if(f.length<15)return null;
+ for(let q=0;q<12;q++){const m=f.reduce((s,r)=>s+r[q],0)/f.length;f.forEach(r=>r[q]-=m)}
+ return f}
 
-async function sendText(t){
-  if(!ch){log('مش متوصل بالقفل','bad');return}
-  var b=new TextEncoder().encode(t+'\n');
-  try{
-    for(var i=0;i<b.length;i+=20){
-      var p=b.slice(i,i+20);
-      if(ch.writeValueWithoutResponse)await ch.writeValueWithoutResponse(p);else await ch.writeValue(p);
-    }
-    log('اتبعتت الرسالة','ok');
-  }catch(e){log('فشل الإرسال: '+e.message,'bad')}
-}
+function dtw(a,b){const n=a.length,m=b.length,w=Math.max(Math.abs(n-m),Math.ceil(.3*Math.max(n,m)));
+ const D=Array.from({length:n+1},()=>new Float64Array(m+1).fill(Infinity));D[0][0]=0;
+ for(let i=1;i<=n;i++)for(let j=Math.max(1,i-w);j<=Math.min(m,i+w);j++){let d=0;for(let q=0;q<12;q++){const t=a[i-1][q]-b[j-1][q];d+=t*t}
+  D[i][j]=Math.sqrt(d)+Math.min(D[i-1][j],D[i][j-1],D[i-1][j-1])}
+ return D[n][m]/(n+m)}
 
-function listen(){
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){log('المتصفح لا يدعم التعرف على الصوت. استخدم Chrome','bad');return}
-  var phrase=norm($('phrase').value);
-  if(!phrase){log('اكتب العبارة السرية الأول','bad');return}
-  var rec=new SR();
-  rec.lang=$('lang').value;rec.interimResults=false;rec.maxAlternatives=3;
-  rec.onresult=function(e){
-    var alts=Array.prototype.map.call(e.results[0],function(a){return norm(a.transcript)});
-    $('heard').textContent=e.results[0][0].transcript;
-    if(alts.some(function(a){return a.indexOf(phrase)!==-1})){log('العبارة مطابقة','ok');sendText($('token').value)}
-    else log('العبارة مش مطابقة','bad');
-  };
-  rec.onerror=function(e){log('خطأ في الميكروفون: '+e.error,'bad')};
-  rec.onend=function(){$('mic').disabled=false;$('mic').textContent='🎤 اضغط وقول العبارة'};
-  $('mic').disabled=true;$('mic').textContent='بسمعك...';$('heard').textContent='';
-  try{rec.start()}catch(e){log('تعذر تشغيل الميكروفون','bad');$('mic').disabled=false}
-}
+const score=(f,set)=>{const d=set.map(t=>dtw(f,t)).sort((a,b)=>a-b);return d.slice(0,3).reduce((s,v)=>s+v,0)/Math.min(3,d.length)};
+function calib(){if(T.length<3){thr=0;return}thr=Math.max(...T.map((t,i)=>score(t,T.filter((_,j)=>j!==i))))*1.3}
 
-$('conn').addEventListener('click',connect);
-$('mic').addEventListener('click',listen);
-$('test').addEventListener('click',function(){sendText($('token').value)});
+async function rec(){
+ const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}});
+ ctx=ctx||new AudioContext();await ctx.resume();
+ const src=ctx.createMediaStreamSource(st),pr=ctx.createScriptProcessor(4096,1,1),buf=[];
+ pr.onaudioprocess=e=>buf.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+ src.connect(pr);pr.connect(ctx.destination);
+ await new Promise(r=>setTimeout(r,REC*1000));
+ pr.disconnect();src.disconnect();st.getTracks().forEach(t=>t.stop());
+ const n=buf.reduce((a,b)=>a+b.length,0),x=new Float32Array(n);let o=0;for(const b of buf){x.set(b,o);o+=b.length}
+ return feat(x,ctx.sampleRate)}
+
+async function run(btn,fn){btn.disabled=true;try{await fn()}catch(e){show('مشكلة',e.name==='NotAllowedError'?'اسمح للمتصفح باستخدام المايك':e.message,'bad')}btn.disabled=false}
+
+$('#bRec').onclick=e=>run(e.target,async()=>{
+ if(T.length>=N){show('مكتمل','امسح التسجيلات لو عايز تعيد');return}
+ show('بيسجّل…','قول open دلوقتي');const f=await rec();
+ if(!f){show('ما سمعتش كلام','قرّب من المايك وحاول تاني','bad');return}
+ T.push(f);save();dots();calib();
+ show(T.length<N?'اتسجلت عينة '+T.length:'التسجيل خلص',T.length<N?'كمّل لحد 5':'جرّب الخطوة 2','ok')});
+
+$('#bClr').onclick=()=>{T=[];save();dots();thr=0;show('اتمسح','سجّل صوتك من الأول')};
+
+$('#bTest').onclick=e=>run(e.target,async()=>{
+ if(T.length<3){show('سجّل الأول','محتاج 3 عينات على الأقل','bad');return}
+ show('بيسمع…','قول open');const f=await rec();
+ if(!f){show('ما سمعتش كلام','حاول تاني','bad');return}
+ const s=score(f,T),lim=thr*$('#sens').value/100,info='الفرق '+s.toFixed(2)+' والحد '+lim.toFixed(2);
+ if(s<=lim){let sent='';if(ch){try{await ch.writeValueWithoutResponse(new TextEncoder().encode('1'));sent=' — اتبعتت إشارة الفتح'}catch(x){sent=' — فشل الإرسال'}}
+  show('صوتك مطابق',info+sent,'ok')}
+ else show('مرفوض',info,'bad')});
+
+function setBt(t){$('#bs').textContent=t}
+$('#bBt').onclick=async()=>{
+ if(!navigator.bluetooth){setBt('افتح الصفحة في Chrome على أندرويد');return}
+ try{const d=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:[0xffe0]});
+  const sv=await(await d.gatt.connect()).getPrimaryService(0xffe0);ch=await sv.getCharacteristic(0xffe1);
+  d.addEventListener('gattserverdisconnected',()=>{ch=null;setBt('الاتصال اتقطع')});setBt('متصل: '+(d.name||'HM-10'))}
+ catch(x){setBt('فشل الاتصال: '+x.message)}};
+
+dots();calib();if(T.length)show('جاهز','عندك '+T.length+' عينات محفوظة');
 </script>
 </body>
 </html>
