@@ -46,21 +46,22 @@ input[type=range]{width:100%}
 </section>
 
 <section>
-<h2>2. جرّب</h2>
-<p>اضغط وقول open. لو بيرفض صوتك زوّد الحساسية، ولو بيقبل غيرك قلّلها.</p>
-<input type="range" id="sens" min="70" max="170" value="100" aria-label="الحساسية">
-<button id="bTest">قول open</button>
+<h2>2. وصّل القفل</h2>
+<p id="bs">اختار موديول HM-10 من القائمة.</p>
+<button class="sec" id="bBt">وصّل Bluetooth</button>
 </section>
 
 <section>
-<h2>3. وصّل القفل</h2>
-<p id="bs">اختار موديول HM-10 من القائمة.</p>
-<button class="sec" id="bBt">وصّل Bluetooth</button>
+<h2>3. جرّب</h2>
+<p>اضغط وقول open. لو بيرفض صوتك زوّد الحساسية، ولو بيقبل غيرك قلّلها.</p>
+<input type="range" id="sens" min="70" max="170" value="100" aria-label="الحساسية">
+<button id="bTest">قول open</button>
 </section>
 </main>
 
 <script>
 const $=s=>document.querySelector(s),N=5,REC=1.6;
+const TOKEN='VOICE_OK\r\n';   /* لازم يطابق PHONE_TOKEN في الفيرموير */
 let T=[],thr=0,ch=null,ctx=null;
 try{const s=JSON.parse(localStorage.getItem('vl')||'null');if(s)T=s}catch(e){}
 function save(){try{localStorage.setItem('vl',JSON.stringify(T))}catch(e){}}
@@ -117,16 +118,19 @@ $('#bRec').onclick=e=>run(e.target,async()=>{
  show('بيسجّل…','قول open دلوقتي');const f=await rec();
  if(!f){show('ما سمعتش كلام','قرّب من المايك وحاول تاني','bad');return}
  T.push(f);save();dots();calib();
- show(T.length<N?'اتسجلت عينة '+T.length:'التسجيل خلص',T.length<N?'كمّل لحد 5':'جرّب الخطوة 2','ok')});
+ show(T.length<N?'اتسجلت عينة '+T.length:'التسجيل خلص',T.length<N?'كمّل لحد 5':'جرّب الخطوة 3','ok')});
 
 $('#bClr').onclick=()=>{T=[];save();dots();thr=0;show('اتمسح','سجّل صوتك من الأول')};
 
 $('#bTest').onclick=e=>run(e.target,async()=>{
- if(T.length<3){show('سجّل الأول','محتاج 3 عينات على الأقل','bad');return}
+ if(T.length<N){show('سجّل الأول','محتاج '+N+' عينات (عندك '+T.length+')','bad');return}
  show('بيسمع…','قول open');const f=await rec();
  if(!f){show('ما سمعتش كلام','حاول تاني','bad');return}
  const s=score(f,T),lim=thr*$('#sens').value/100,info='الفرق '+s.toFixed(2)+' والحد '+lim.toFixed(2);
- if(s<=lim){let sent='';if(ch){try{await ch.writeValueWithoutResponse(new TextEncoder().encode('1'));sent=' — اتبعتت إشارة الفتح'}catch(x){sent=' — فشل الإرسال'}}
+ if(s<=lim){
+  let sent='';
+  if(!ch){sent=' — القفل مش متصل'}
+  else{try{await ch.writeValueWithoutResponse(new TextEncoder().encode(TOKEN));sent=' — اتبعت إشارة الفتح'}catch(x){sent=' — فشل الإرسال'}}
   show('صوتك مطابق',info+sent,'ok')}
  else show('مرفوض',info,'bad')});
 
