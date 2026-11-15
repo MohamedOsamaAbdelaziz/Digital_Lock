@@ -146,8 +146,14 @@ Requirements:
 
 ## Author
 
-*Mohamed Osama Abdelaziz* — [GitHub](https://github.com/MohamedOsamaAbdelaziz)  
+*Mohamed Osama Abdelaziz* — [GitHub](https://github.com/MohamedOsamaAbdelaziz) 
+## Team Members  
+- **Mohamed Osama Abdelaziz** — [GitHub](https://github.com/MohamedOsamaAbdelaziz)
+- **Ziad Walid Ahmed** — [GitHub](https://github.com/Z0f5)
+- **ِAhmed Essam** — [GitHub](https://github.com/ahmedesam2502-droid)
 
-Higher Technological Institute, 10th of Ramadan City  
-Course: Microprocessors  
+University: Higher Technological Institute (HTI), 10th of Ramadan City  
+Course: computer Microprocessors  
 Supervisor: Prof. Mohamed Torad  
+
+
