@@ -146,4 +146,8 @@ Requirements:
 
 ## Author
 
-Mohamed — university engineering project.
+*Mohamed Osama Abdelaziz* — [GitHub](https://github.com/MohamedOsamaAbdelaziz)  
+
+Higher Technological Institute, 10th of Ramadan City  
+Course: Microprocessors  
+Supervisor: Prof. Mohamed Torad  
